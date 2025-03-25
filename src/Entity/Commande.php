@@ -27,6 +27,9 @@ class Commande
     #[ORM\JoinColumn(nullable: false)]
     private ?User $no = null;
 
+    #[ORM\ManyToOne(inversedBy: 'commande')]
+    private ?DetailCommande $detailCommande = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +79,18 @@ class Commande
     public function setNo(?User $no): static
     {
         $this->no = $no;
+
+        return $this;
+    }
+
+    public function getDetailCommande(): ?DetailCommande
+    {
+        return $this->detailCommande;
+    }
+
+    public function setDetailCommande(?DetailCommande $detailCommande): static
+    {
+        $this->detailCommande = $detailCommande;
 
         return $this;
     }
