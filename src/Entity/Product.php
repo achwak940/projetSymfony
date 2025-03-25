@@ -40,13 +40,35 @@ class Product
     #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'product')]
     private Collection $avis;
 
-    #[ORM\ManyToOne(inversedBy: 'produit')]
-    private ?DetailCommande $detailCommande = null;
+
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?Categorie $categorie = null;
+
+    /**
+     * @var Collection<int, Promotions>
+     */
+    #[ORM\ManyToMany(targetEntity: Promotions::class, inversedBy: 'products')]
+    private Collection $promotion;
+
+    /**
+     * @var Collection<int, Image>
+     */
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'product')]
+    private Collection $image;
+
+    /**
+     * @var Collection<int, DetailCommande>
+     */
+    #[ORM\OneToMany(targetEntity: DetailCommande::class, mappedBy: 'product')]
+    private Collection $detailscommande;
 
     public function __construct()
     {
-        $this->avis = new ArrayCollection();
+        $this->detailscommande = new ArrayCollection();
     }
+
+   
 
     public function getId(): ?int
     {
@@ -155,15 +177,103 @@ class Product
         return $this;
     }
 
-    public function getDetailCommande(): ?DetailCommande
+    
+
+    public function getCategorie(): ?Categorie
     {
-        return $this->detailCommande;
+        return $this->categorie;
     }
 
-    public function setDetailCommande(?DetailCommande $detailCommande): static
+    public function setCategorie(?Categorie $categorie): static
     {
-        $this->detailCommande = $detailCommande;
+        $this->categorie = $categorie;
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Promotions>
+     */
+    public function getPromotion(): Collection
+    {
+        return $this->promotion;
+    }
+
+    public function addPromotion(Promotions $promotion): static
+    {
+        if (!$this->promotion->contains($promotion)) {
+            $this->promotion->add($promotion);
+        }
+
+        return $this;
+    }
+
+    public function removePromotion(Promotions $promotion): static
+    {
+        $this->promotion->removeElement($promotion);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImage(): Collection
+    {
+        return $this->image;
+    }
+
+    public function addImage(Image $image): static
+    {
+        if (!$this->image->contains($image)) {
+            $this->image->add($image);
+            $image->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): static
+    {
+        if ($this->image->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getProduct() === $this) {
+                $image->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DetailCommande>
+     */
+    public function getDetailscommande(): Collection
+    {
+        return $this->detailscommande;
+    }
+
+    public function addDetailscommande(DetailCommande $detailscommande): static
+    {
+        if (!$this->detailscommande->contains($detailscommande)) {
+            $this->detailscommande->add($detailscommande);
+            $detailscommande->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetailscommande(DetailCommande $detailscommande): static
+    {
+        if ($this->detailscommande->removeElement($detailscommande)) {
+            // set the owning side to null (unless already changed)
+            if ($detailscommande->getProduct() === $this) {
+                $detailscommande->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+  
 }

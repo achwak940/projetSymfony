@@ -13,8 +13,23 @@ class Image
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(inversedBy: 'image')]
+    private ?Product $product = null;
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): static
+    {
+        $this->product = $product;
+
+        return $this;
     }
 }

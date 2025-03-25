@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CommandeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -27,13 +29,19 @@ class Commande
     #[ORM\JoinColumn(nullable: false)]
     private ?User $no = null;
 
-    #[ORM\ManyToOne(inversedBy: 'commande')]
-    private ?DetailCommande $detailCommande = null;
+    /**
+     * @var Collection<int, DetailCommande>
+     */
+    #[ORM\OneToMany(targetEntity: DetailCommande::class, mappedBy: 'commande')]
+    private Collection $commande;
 
-    public function getId(): ?int
+    public function __construct()
     {
-        return $this->id;
+        $this->commande = new ArrayCollection();
     }
+
+ 
+  
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
@@ -83,15 +91,37 @@ class Commande
         return $this;
     }
 
-    public function getDetailCommande(): ?DetailCommande
+    /**
+     * @return Collection<int, DetailCommande>
+     */
+    public function getCommande(): Collection
     {
-        return $this->detailCommande;
+        return $this->commande;
     }
 
-    public function setDetailCommande(?DetailCommande $detailCommande): static
+    public function addCommande(DetailCommande $commande): static
     {
-        $this->detailCommande = $detailCommande;
+        if (!$this->commande->contains($commande)) {
+            $this->commande->add($commande);
+            $commande->setCommande($this);
+        }
 
         return $this;
     }
+
+    public function removeCommande(DetailCommande $commande): static
+    {
+        if ($this->commande->removeElement($commande)) {
+            // set the owning side to null (unless already changed)
+            if ($commande->getCommande() === $this) {
+                $commande->setCommande(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
 }
