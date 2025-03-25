@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -33,6 +35,17 @@ class User
 
     #[ORM\Column]
     private ?int $telephone = null;
+
+    /**
+     * @var Collection<int, Commande>
+     */
+    #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'no')]
+    private Collection $Commande;
+
+    public function __construct()
+    {
+        $this->Commande = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -119,6 +132,36 @@ class User
     public function setTelephone(int $telephone): static
     {
         $this->telephone = $telephone;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommande(): Collection
+    {
+        return $this->Commande;
+    }
+
+    public function addCommande(Commande $commande): static
+    {
+        if (!$this->Commande->contains($commande)) {
+            $this->Commande->add($commande);
+            $commande->setNo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): static
+    {
+        if ($this->Commande->removeElement($commande)) {
+            // set the owning side to null (unless already changed)
+            if ($commande->getNo() === $this) {
+                $commande->setNo(null);
+            }
+        }
 
         return $this;
     }

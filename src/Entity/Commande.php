@@ -23,6 +23,10 @@ class Commande
     #[ORM\Column(nullable: true)]
     private ?float $montant_total = null;
 
+    #[ORM\ManyToOne(inversedBy: 'Commande')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $no = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +64,18 @@ class Commande
     public function setMontantTotal(?float $montant_total): static
     {
         $this->montant_total = $montant_total;
+
+        return $this;
+    }
+
+    public function getNo(): ?User
+    {
+        return $this->no;
+    }
+
+    public function setNo(?User $no): static
+    {
+        $this->no = $no;
 
         return $this;
     }
