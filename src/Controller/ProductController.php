@@ -17,7 +17,7 @@ final class ProductController extends AbstractController
             'controller_name' => 'ProductController',
         ]);
     }
-    #[Route('/produits', name:'recipe.index')]
+    #[Route('/produits', name:'produit.index')]
     public function listeProduits(Request $request,ProductRepository $repository,EntityManagerInterface $en) : Response
     {
         $produits= $repository->findAll();
@@ -31,7 +31,7 @@ final class ProductController extends AbstractController
            ->setCreatedAt(new \DateTime())
            ->setUpdatedAt(new \DateTime());
     $en->flush();*/
-        return $this->render('product/listproduits.html.twig',[
+        return $this->render('product/shop.html.twig',[
             'produits'=>
             $produits
         ]
