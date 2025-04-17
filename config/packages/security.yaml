@@ -22,7 +22,7 @@ security:
       form_login:
         login_path: app_login       # Route name متاع صفحة login
         check_path: app_login       # نفس الشيء إذا تستعمل نفس المسار
-        default_target_path: app_daschbord  # بعد login ناجح
+        default_target_path: app_home # بعد login ناجح
         username_parameter: _username
         password_parameter: _password
 
@@ -33,4 +33,5 @@ security:
   access_control:
     - { path: ^/login, roles: PUBLIC_ACCESS }       # يسمح لأي حد يدخل صفحة login
     - { path: ^/logout, roles: PUBLIC_ACCESS }      # نفس الشيء لل logout
-    - { path: ^/daschbord, roles: ROLE_ADMIN }      # يحمي صفحة dashboard
+    - { path: ^/daschbord, roles: ROLE_ADMIN }  
+        # يحمي صفحة dashboard

@@ -16,7 +16,18 @@ final class HomeController extends AbstractController
     #[Route('/home', name: 'app_home')]
     public function index(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
     {
-        
+        $user = new User();
+        $user->setFirstname("Hanin")
+            ->setLastname("Bellili")
+            ->setAdress("Sousse")
+            ->setEmail("haninbellili2@gmail.com")
+            ->setRoles(['ROLE_CLIENT']) // Toujours mettre un rôle valide (ex: ROLE_USER)
+            ->setTelephone(28170520);
+        // Hasher le mot de passe correctement
+        $hashedPassword = $hasher->hashPassword($user, '0000');
+        $user->setPassword($hashedPassword);
+        $em->persist($user);
+        $em->flush();
 
         return $this->render('home/pageAcceuil.html.twig', [
             'controller_name' => 'HomeController',
