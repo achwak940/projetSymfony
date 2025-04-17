@@ -21,16 +21,6 @@ final class ProductController extends AbstractController
     public function listeProduits(Request $request,ProductRepository $repository,EntityManagerInterface $en) : Response
     {
         $produits= $repository->findAll();
-      //$recipes[0]->setTitle('salade');
-    //   $en->flush();
-    /*$recipe = new Recipe();
-    $recipe->setTitle('Barbe-papa')
-           ->setSlug('brabe-papa')
-           ->setContent('Mettez de sucre')
-           ->setDuration(2)
-           ->setCreatedAt(new \DateTime())
-           ->setUpdatedAt(new \DateTime());
-    $en->flush();*/
         return $this->render('product/shop.html.twig',[
             'produits'=>
             $produits
