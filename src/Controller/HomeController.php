@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\ImageRepository;
+use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class HomeController extends AbstractController
 {
@@ -26,9 +30,20 @@ final class HomeController extends AbstractController
     return $this->render('home/about.html.twig');
     }
     #[Route('/panier', name: 'panier')]
-    public function panier(): Response
+    public function panier(Request $request,ProductRepository $repository,ImageRepository $image,EntityManagerInterface $en): Response
     {
-    return $this->render('home/cart.html.twig');
+        $produits= $repository->findAll();
+        $images=$image->findALl();
+    return $this->render('home/cart.html.twig',[
+        'produits'=>
+        $produits,
+        'images'=>$images
+    ]);
+    }
+    #[Route('/confirme', name: 'confirmation')]
+    public function confirme(): Response
+    {
+    return $this->render('home/thankyou.html.twig');
     }
 }
 
