@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,12 +19,14 @@ final class ProductController extends AbstractController
         ]);
     }
     #[Route('/produits', name:'produit.index')]
-    public function listeProduits(Request $request,ProductRepository $repository,EntityManagerInterface $en) : Response
+    public function listeProduits(Request $request,ProductRepository $repository,ImageRepository $image,EntityManagerInterface $en) : Response
     {
         $produits= $repository->findAll();
+        $images=$image->findALl();
         return $this->render('product/shop.html.twig',[
             'produits'=>
-            $produits
+            $produits,
+            'images'=>$images
         ]
     );
     }

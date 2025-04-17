@@ -44,9 +44,13 @@
                    <!-- Start Column 3 -->
 					<div class="col-12 col-md-4 col-lg-3 mb-5">
 						<a class="product-item" href="#">
-						<img src="images/product-2.png" class="img-fluid product-thumbnail">
+						{% for image in images %}
+						  {% if image.getproduct().id==produit.id %}
+						     <img src="{{image.name}}"class="img-fluid product-thumbnail">
+							  {% endif %}
+						{% endfor %}
 							<h3 class="product-title">{{produit.name}}</h3>
-							<strong class="product-price">{{produit.prix}}</strong>
+							<strong class="product-price">{{produit.prix}}DT</strong>
                      <span class="icon-cross">
 								<img src="images/cross.svg" class="img-fluid">
 							</span>
@@ -55,7 +59,6 @@
 					<!-- End Column 3 -->
                 {% else %}
                     <!-- Message si aucune recette n'est trouvée -->
-                    
                         <H5 colspan="2" class="text-center text-muted">No product found.</H5>
                     
                 {% endfor %}
