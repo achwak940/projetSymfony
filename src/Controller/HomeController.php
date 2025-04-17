@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-<<<<<<< HEAD
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -9,16 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-=======
-
-use App\Repository\ImageRepository;
-use App\Repository\ProductRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
->>>>>>> origin/master
 
 final class HomeController extends AbstractController
 {
@@ -37,6 +26,7 @@ final class HomeController extends AbstractController
         $user->setPassword($hashedPassword);
         $em->persist($user);
         $em->flush();
+
         return $this->render('home/pageAcceuil.html.twig', [
             'controller_name' => 'HomeController',
         ]);
@@ -53,20 +43,9 @@ final class HomeController extends AbstractController
     return $this->render('home/about.html.twig');
     }
     #[Route('/panier', name: 'panier')]
-    public function panier(Request $request,ProductRepository $repository,ImageRepository $image,EntityManagerInterface $en): Response
+    public function panier(): Response
     {
-        $produits= $repository->findAll();
-        $images=$image->findALl();
-    return $this->render('home/cart.html.twig',[
-        'produits'=>
-        $produits,
-        'images'=>$images
-    ]);
-    }
-    #[Route('/confirme', name: 'confirmation')]
-    public function confirme(): Response
-    {
-    return $this->render('home/thankyou.html.twig');
+    return $this->render('home/cart.html.twig');
     }
 }
 
