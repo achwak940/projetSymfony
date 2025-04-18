@@ -1,39 +1,75 @@
-<!-- Start Header/Navigation -->
+
 <nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
-    <div class="container">
-        <a class="navbar-brand" href="index.html">Furni<span>.</span></a>
+	<div class="container">
+		<a class="navbar-brand" href="index.html">Furni<span>.</span>
+		</a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
 
-        <div class="collapse navbar-collapse" id="navbarsFurni">
-            <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ path('app_home') }}">Home</a>
-                </li>
-                <li><a class="nav-link" href="{{ path('produit.index') }}">Shop</a></li>
-                <li><a class="nav-link" href="{{ path('about') }}">About us</a></li>
-                <li><a class="nav-link" href="{{ path('contact') }}">Contact us</a></li>
+		<div class="collapse navbar-collapse" id="navbarsFurni">
+			<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+				<li class="nav-item active">
+					<a class="nav-link" href="{{ path('app_home') }}">Home</a>
+				</li>
+				<li>
+					<a class="nav-link" href="{{ path('produit.index') }}">Shop</a>
+				</li>
+				<li>
+					<a class="nav-link" href="{{ path('about') }}">About us</a>
+				</li>
+				<li>
+					<a class="nav-link" href="{{ path('contact') }}">Contact us</a>
+				</li>
 
-                {% if app.user %}
-                    {% if 'ROLE_ADMIN' in app.user.roles %}
-                        <li><a class="nav-link" href="{{ path('app_daschbord') }}">Dashboard</a></li>
-                    {% elseif 'ROLE_CLIENT' in app.user.roles %}
-                        <li><a class="nav-link" href="">Order History</a></li>
-                    {% endif %}
-                    <li><a class="nav-link" href="{{ path('app_logout') }}">Logout</a></li>
-                {% else %}
-                    <li><a class="nav-link" href="{{ path('app_login') }}">Login</a></li>
-                    <li><a class="nav-link" href="">Register</a></li>
-                {% endif %}
-            </ul>
+				{% if app.user %}
+					{% if 'ROLE_ADMIN' in app.user.roles %}
+						<li>
+							<a class="nav-link" href="{{ path('app_daschbord') }}">Dashboard</a>
+						</li>
 
-            <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                <li><a class="nav-link" href="#"><img src="{{ asset('images/user.svg') }}"></a></li>
-                <li><a class="nav-link" href="{{ path('panier') }}"><img src="{{ asset('images/cart.svg') }}"></a></li>
-            </ul>
-        </div>
-    </div>
+					{% elseif 'ROLE_CLIENT' in app.user.roles %}
+						<li>
+							<a class="nav-link" href="">Order History</a>
+						</li>
+
+					{% endif %}
+					<li>
+						<a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
+					</li>
+				{% else %}
+					<li>
+						<a class="nav-link" href="{{ path('app_login') }}">Login</a>
+					</li>
+					<li>
+						<a class="nav-link" href="">Register</a>
+					</li>
+				{% endif %}
+			</ul>
+
+			<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+				{% if app.user and app.user.roles is defined %}
+					{% if 'ROLE_ADMIN' in app.user.roles %}
+						<li>
+							<a class="nav-link" href="#"><img src="{{ asset('images/user.svg') }}"></a>
+                               <p>Hello {{ user.firstname }} {{ user.lastname }}! ✅</p>
+						</li>
+					{% endif %}
+				{% endif %}
+				{% if app.user and app.user.roles is defined %}
+					{% if 'ROLE_CLIENT' in app.user.roles %}
+						<li>
+							<a class="nav-link" href="#"><img src="{{ asset('images/user.svg') }}"></a>
+                               <p>Hello {{ user.firstname }} {{ user.lastname }}! ✅</p>
+                               
+						</li>
+					{% endif %}
+				{% endif %}
+				<li>
+					<a class="nav-link" href="{{ path('panier') }}"><img src="{{ asset('images/cart.svg') }}"></a>
+				</li>
+			</ul>
+		</div>
+	</div>
 </nav>
-<!-- End Header/Navigation -->
