@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Ajouter un produit - Dashboard E-commerce</title>
+    <link href="css/admin.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="bg-success text-white p-3 sidebar">
+            <div class="d-flex align-items-center mb-4">
+                <i class="fas fa-store fa-2x me-2"></i>
+                <h3 class="mb-0">E-commerce Admin</h3>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ path('admin') }}">
+                        <i class="fas fa-home me-2"></i>Tableau de bord
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white active" href="#">
+                        <i class="fas fa-box me-2"></i>Produits
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">
+                        <i class="fas fa-users me-2"></i>Clients
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">
+                        <i class="fas fa-shopping-cart me-2"></i>Commandes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">
+                        <i class="fas fa-chart-bar me-2"></i>Rapports
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Page Content -->
+        <div class="page-content w-100">
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-4 py-2">
+                <div class="container-fluid">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-bars me-3 text-success"></i>
+                        <h4 class="mb-0 text-success">Ajouter un nouveau produit</h4>
+                    </div>
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle fa-lg text-success"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Paramètres</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <div class="container-fluid mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card shadow">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Informations du produit</h5>
+                            </div>
+                            <div class="card-body">
+                                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-floating mb-3">
+                                                {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Nom du produit'}}) }}
+                                                {{ form_label(form.name) }}
+                                                {{ form_errors(form.name) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating mb-3">
+                                                {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'Prix', 'step': '0.01'}}) }}
+                                                {{ form_label(form.prix) }}
+                                                {{ form_errors(form.prix) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating mb-3">
+                                                {{ form_widget(form.stock, {'attr': {'class': 'form-control', 'placeholder': 'Stock'}}) }}
+                                                {{ form_label(form.stock) }}
+                                                {{ form_errors(form.stock) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating mb-3">
+                                                {{ form_widget(form.categorie, {'attr': {'class': 'form-select'}}) }}
+                                                {{ form_label(form.categorie) }}
+                                                {{ form_errors(form.categorie) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-floating mb-3">
+                                                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'style': 'height: 100px', 'placeholder': 'Description'}}) }}
+                                                {{ form_label(form.description) }}
+                                                {{ form_errors(form.description) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                {{ form_label(form.images) }}
+                                                {{ form_widget(form.images, {'attr': {'class': 'form-control'}}) }}
+                                               {{ form_errors(form.images) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-between">
+                                                <a href="{{ path('admin') }}" class="btn btn-outline-success">
+                                                    <i class="fas fa-arrow-left me-2"></i>Retour
+                                                </a>
+                                                {{ form_widget(form.save, {'attr': {'class': 'btn btn-success'}}) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Flash Messages - SweetAlert2 -->
+    {% for message in app.flashes('success') %}
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Succès',
+                text: '{{ message }}',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#198754'
+            });
+        </script>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: '{{ message }}',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#dc3545'
+            });
+        </script>
+    {% endfor %}*
+</body>
+</html>

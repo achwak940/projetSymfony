@@ -1,0 +1,191 @@
+:root {
+   --primary-green: #2ecc71;
+   --secondary-green: #27ae60;
+   --light-green: #d5f5e3;
+   --dark-green: #1e8449;
+   --gradient-green: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+ }
+
+ body {
+   background-color: #f8f9fa;
+ }
+
+ .sidebar {
+   min-height: 100vh;
+   position: fixed;
+   width: 250px;
+   background: var(--gradient-green);
+   box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+ }
+
+ .page-content {
+   margin-left: 250px;
+ }
+
+ .nav-link {
+   padding: 0.8rem 1rem;
+   margin: 0.2rem 0;
+   border-radius: 0.5rem;
+   transition: all 0.3s ease;
+ }
+
+ .nav-link:hover {
+   background-color: rgba(255,255,255,0.2);
+   transform: translateX(5px);
+ }
+
+ .nav-link.active {
+   background-color: rgba(255,255,255,0.2);
+   font-weight: bold;
+ }
+
+ .card {
+   border: none;
+   border-radius: 1rem;
+   transition: all 0.3s ease;
+   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ }
+
+ .card:hover {
+   transform: translateY(-5px);
+   box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+ }
+
+ .stat-card {
+   background: var(--gradient-green);
+   color: white;
+   height: 100%;
+   overflow: hidden;
+   position: relative;
+ }
+
+ .stat-card::before {
+   content: '';
+   position: absolute;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+   z-index: 1;
+ }
+
+ .stat-card .card-body {
+   position: relative;
+   z-index: 2;
+ }
+
+ .product-card {
+   height: 100%;
+   border: 1px solid rgba(46, 204, 113, 0.2);
+ }
+
+ .product-card:hover {
+   border-color: var(--primary-green);
+ }
+
+ .product-image {
+   height: 200px;
+   object-fit: cover;
+   border-radius: 0.5rem 0.5rem 0 0;
+ }
+
+ .order-status {
+   padding: 0.25rem 0.75rem;
+   border-radius: 1rem;
+   font-size: 0.875rem;
+   font-weight: 500;
+ }
+
+ .status-pending {
+   background-color: #fff3cd;
+   color: #856404;
+ }
+
+ .status-processing {
+   background-color: #cce5ff;
+   color: #004085;
+ }
+
+ .status-completed {
+   background-color: #d4edda;
+   color: #155724;
+ }
+
+ .status-cancelled {
+   background-color: #f8d7da;
+   color: #721c24;
+ }
+
+ .btn-success {
+   background: var(--gradient-green);
+   border: none;
+   padding: 0.5rem 1.5rem;
+   border-radius: 0.5rem;
+   transition: all 0.3s ease;
+ }
+
+ .btn-success:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+ }
+
+ .navbar {
+   background: white;
+   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+ }
+
+ .search-input {
+   border-radius: 2rem;
+   padding: 0.5rem 1.5rem;
+   border: 2px solid var(--light-green);
+   transition: all 0.3s ease;
+ }
+
+ .search-input:focus {
+   border-color: var(--primary-green);
+   box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.25);
+ }
+
+ .table {
+   border-radius: 0.5rem;
+   overflow: hidden;
+ }
+
+ .table thead th {
+   background-color: var(--light-green);
+   border: none;
+   padding: 1rem;
+ }
+
+ .table tbody td {
+   padding: 1rem;
+   vertical-align: middle;
+ }
+
+ .dropdown-menu {
+   border: none;
+   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+   border-radius: 0.5rem;
+ }
+
+ .dropdown-item {
+   padding: 0.5rem 1.5rem;
+   transition: all 0.3s ease;
+ }
+
+ .dropdown-item:hover {
+   background-color: var(--light-green);
+   transform: translateX(5px);
+ }
+
+ .card-header {
+   background: white;
+   border-bottom: 2px solid var(--light-green);
+   padding: 1rem 1.5rem;
+ }
+
+ .card-header h5 {
+   color: var(--dark-green);
+   font-weight: 600;
+ }
