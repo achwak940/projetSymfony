@@ -9,6 +9,13 @@
  body {
    background-color: #f8f9fa;
  }
+ .d-flex{
+  margin-left: 100px;
+ }
+ .main-content {
+  padding: 20px;
+  min-height: calc(100vh - 60px);
+}
 
  .sidebar {
    min-height: 100vh;
