@@ -61,7 +61,7 @@
 					{% if 'ROLE_CLIENT' in app.user.roles %}
 						<li>
 							<a class="nav-link" href="#"><img src="{{ asset('images/user.svg') }}"></a>
-                               <p>Hello {{ user.firstname }} {{ user.lastname }}! ✅</p>
+                               <p>Hello {{ app.user.firstname }} {{ app.user.lastname }}! ✅</p>
                                
 						</li>
 					{% endif %}
