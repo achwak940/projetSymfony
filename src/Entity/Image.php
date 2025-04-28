@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ImageRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ImageRepository::class)]
 class Image
@@ -17,6 +18,7 @@ class Image
     private ?Product $product = null;
 
     #[ORM\Column(length: 255)]
+    
     private ?string $name = null;
 
     public function getId(): ?int
