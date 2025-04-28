@@ -1,21 +1,21 @@
 <?php
 
 namespace App\Form;
-
 use App\Entity\Product;
 use App\Entity\Categorie;
-use App\Entity\Promotions;
-use Dom\Text;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\Url;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class ProductType extends AbstractType
 {
@@ -24,16 +24,33 @@ class ProductType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom du produit',
-                'required' => true
+                'required' => true,
+                'constraints' => [
+                    new NotNull([
+                        'message' => 'Le nom du produit ne peut pas être vide.'
+                    ])
+                ]
             ])
             ->add('prix', NumberType::class, [
                 'label' => 'Prix (DT)',
                 'required' => true,
-                'scale' => 2
+                'scale' => 3,//chiffres apres le virgul 
+                'html5' => true,
+                'constraints' => [
+                    new NotNull([
+                        'message' => 'Le prix du produit ne peut pas être vide.'
+                    ])
+                ]
             ])
             ->add('stock', NumberType::class, [
                 'label' => 'Stock',
-                'required' => true
+                'required' => true,
+                'html5' => true,
+                'constraints' => new Range([
+            'min' => 1,
+            'max' => 1000,
+            'notInRangeMessage' => 'Le stock doit être entre {{ min }} et {{ max }}.'
+        ]),
             ])
             ->add('categorie', EntityType::class, [
                 'class' => Categorie::class,
@@ -43,12 +60,17 @@ class ProductType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
-                'required' => true
+                'constraints' => new Length(min:10),
             ])
             ->add('images', TextType::class, [
                 'label' => 'Images du produit',
                 'mapped' => false,
                 'required' => true,
+                'constraints'=>[ new Url(['message'=>'Veuillez entrer une URL valide.']), 
+               /* new Regex([
+                    'pattern' => '/\.(jpg|jpeg|png)$/i',
+                    'message' => 'L\'URL doit se terminer par .jpg, .jpeg, .png .',
+                ]),*/],
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer',

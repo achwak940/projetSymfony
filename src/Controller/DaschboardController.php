@@ -66,7 +66,7 @@ final class DaschboardController extends AbstractController
             $en->persist($product);
             $en->flush();
             $this->addFlash('success', 'Le produit a été ajouté avec succès');
-            return $this->redirectToRoute('produit.index');
+            return $this->redirectToRoute('admin');
         }
         if ($form->isSubmitted() && !$form->isValid()) {
             $this->addFlash('error', 'Veuillez remplir tous les champs correctement.');
@@ -84,6 +84,16 @@ final class DaschboardController extends AbstractController
         $en->remove($product);
         $en->flush();
         $this->addFlash('success', 'le produit a été supprimée');
-        return $this->redirectToRoute('produit.index');
+        return $this->redirectToRoute('admin');
+    }
+    #[Route('/affiche', name:'affiche')]
+    public function client(Request $request,UserRepository $repository,EntityManagerInterface $en) : Response
+    {
+        $clients= $repository->findAll();
+        return $this->render('dashboard/client.html.twig',[
+            'clients'=>
+            $clients,
+        ]
+    );
     }
 }
