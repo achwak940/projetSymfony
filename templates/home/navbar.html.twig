@@ -38,6 +38,9 @@
 					<li>
 						<a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
 					</li>
+					<li>
+					<a class="nav-link" href="{{ path('cart_show') }}"><img src="{{ asset('images/cart.svg') }}"></a>
+				</li>
 				{% else %}
 					<li>
 						<a class="nav-link" href="{{ path('app_login') }}">Login</a>
@@ -66,9 +69,7 @@
 						</li>
 					{% endif %}
 				{% endif %}
-				<li>
-					<a class="nav-link" href="{{ path('panier') }}"><img src="{{ asset('images/cart.svg') }}"></a>
-				</li>
+				
 			</ul>
 		</div>
 	</div>

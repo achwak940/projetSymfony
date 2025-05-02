@@ -108,9 +108,10 @@
                             <p class="card-text">Prix: {{produit.prix}}DT</p>
                             <p class="card-text">Stock: {{produit.stock}}</p>
                             <div class="mt-auto d-flex justify-content-between">
+                            <a href="{{ path('edit', { id: produit.id }) }}" >
                               <button class="btn btn-sm btn-success">
                                 <i class="fas fa-edit"></i>
-                              </button>
+                              </button></a>
                               <form method="post" action="{{ path('delete', { id: produit.id }) }}" onsubmit="return confirm('Confirmer la suppression ?');">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="btn btn-sm btn-danger">

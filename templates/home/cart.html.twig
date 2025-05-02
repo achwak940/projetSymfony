@@ -10,11 +10,11 @@
   <meta name="keywords" content="bootstrap, bootstrap4" />
 
 		<!-- Bootstrap CSS -->
-		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-		<link href="css/tiny-slider.css" rel="stylesheet">
-		<link href="css/style.css" rel="stylesheet">
-		<title>panier </title>
+		<link href="{{ asset('css/tiny-slider.css') }}" rel="stylesheet">
+		<link href="{{ asset('css/style.css') }}" rel="stylesheet">
+		<title>Panier</title>
 	</head>
 {% include 'home/navbar.html.twig' %}
 	<body>
@@ -24,217 +24,134 @@
 					<div class="row justify-content-between">
 						<div class="col-lg-5">
 							<div class="intro-excerpt">
-								<h1>Cart</h1>
+								<h1>Panier</h1>
 							</div>
-						</div>
-						<div class="col-lg-7">
-							
 						</div>
 					</div>
 				</div>
 			</div>
 
-<!-- js pour panier-->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  function updateTotals() {
-    let subtotal = 0;
+		<div class="container">
+			<div class="row mb-5">
+				<form class="col-md-12" method="post">
+					<div class="site-blocks-table">
+						<table class="table">
+							<thead>
+								<tr>
+									<th class="product-thumbnail">Image</th>
+									<th class="product-name">Produit</th>
+									<th class="product-price">Prix</th>
+									<th class="product-quantity">Quantité</th>
+									<th class="product-total">Total</th>
+									<th class="product-remove">Supprimer</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for item in products %}
+								<tr>
+									<td class="product-thumbnail">
+										{% if item.product.getImage() is not empty and item.product.getImage()[0] is defined %}
+											<img src="{{ item.product.getImage()[0].name }}" alt="Image" class="img-fluid" style="max-width: 100px;">
+										{% else %}
+											<img src="https://via.placeholder.com/100" alt="Pas d'image" class="img-fluid" style="max-width: 100px;">
+										{% endif %}
+									</td>
+									<td class="product-name">
+										<h2 class="h5 text-black">{{ item.product.name }}</h2>
+									</td>
+									<td class="product-price">{{ item.product.prix }} dt</td>
+									<td>
+										<div class="input-group mb-3">
+											<h2 class="form-control text-center" >{{ item.quantity }}</h2>
+										</div>
+									</td>
+									<td class="product-total">{{ item.total }} dt</td>
+									<td>
+										<a href="{{ path('cart_remove', {'id': item.product.id}) }}" class="btn btn-black btn-sm">Supprimer</a>
+									</td>
+								</tr>
+							{% else %}
+								<tr>
+									<td colspan="6" class="text-center">Votre panier est vide</td>
+								</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</form>
+			</div>
 
-    document.querySelectorAll('tr').forEach(function (row) {
-      const priceCell = row.querySelector('.product-price');
-      const quantityInput = row.querySelector('.quantity-amount');
-      const totalCell = row.querySelector('.product-total');
-
-      if (priceCell && quantityInput && totalCell) {
-        const price = parseFloat(priceCell.dataset.price);
-        const quantity = parseInt(quantityInput.value);
-        const total = price * quantity;
-
-        totalCell.textContent = total.toFixed(2) + ' dt';
-        subtotal += total;
-      }
-    });
-
-    // Mise à jour des totaux globaux
-    document.getElementById('cart-subtotal').textContent = subtotal.toFixed(2) + ' dt';
-    document.getElementById('cart-total').textContent = subtotal.toFixed(2) + ' dt';
-  }
-
-  // Gestion des boutons + et -
-  document.querySelectorAll('.increase').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      const input = this.closest('.quantity-container').querySelector('.quantity-amount');
-      input.value = parseInt(input.value) + 0;
-      updateTotals();
-    });
-  });
-
-  document.querySelectorAll('.decrease').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      const input = this.closest('.quantity-container').querySelector('.quantity-amount');
-      const currentValue = parseInt(input.value);
-      if (currentValue > 1) {
-        input.value = currentValue - 0;
-        updateTotals();
-      }
-    });
-  });
-
-  // Mettre à jour les totaux au chargement
-  updateTotals();
-});
-
-
-
- //ta3 lcroix hetha
-document.addEventListener("DOMContentLoaded", function () {
-    // Gérer la suppression d’un produit
-    const removeButtons = document.querySelectorAll('.remove-item');
-
-    removeButtons.forEach(btn => {
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        const row = this.closest('tr');
-        if (row) {
-          row.remove();
-          updateTotals(); // Recalcule les totaux après suppression
-        }
+			<div class="row justify-content-center">
+				<div class="col-md-6">
+					<div class="card mb-5">
+						<div class="card-body">
+							<div class="row mb-3">
+								<div class="col-12">
+									<h3 class="text-black h4 text-uppercase text-center mb-4">Total du panier</h3>
+								</div>
+							</div>
+							<div class="row mb-2">
+								<div class="col-6">
+									<span class="text-black">Sous-total</span>
+								</div>
+								<div class="col-6 text-end">
+									<strong class="text-black">{{ total|number_format(2, '.', ' ') }} dt</strong>
+								</div>
+							</div>
+							<div class="row mb-2">
+								<div class="col-6">
+									<span class="text-black">Frais de livraison</span>
+								</div>
+								<div class="col-6 text-end">
+									<strong class="text-black">Gratuit</strong>
+								</div>
+							</div>
+							<hr>
+							<div class="row mb-4">
+								<div class="col-6">
+									<span class="text-black fw-bold">Total TTC</span>
+								</div>
+								<div class="col-6 text-end">
+									<strong class="text-black">{{ total|number_format(2, '.', ' ') }} dt</strong>
+								</div>
+							</div>
+              {% if products is not empty %}
+							<div class="row mb-3">
+								<div class="col-12">
+									<a href="{{ path('valider_commande') }}" class="btn btn-black btn-lg py-3 w-100">
+										Confirmer la commande
+									</a>
+								</div>
+							</div>
+              {% endif %}
+							<div class="row">
+								<div class="col-12">
+									<a href="{{ path('produit.index') }}" class="btn btn-outline-black btn-sm w-100">
+										Continuer les achats
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+{% for message in app.flashes('success') %}
+  <script>
+      Swal.fire({
+          icon: 'success',
+          title: 'Succès',
+          text: '{{ message }}',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#198754'
       });
-    });
-
-    // Mise à jour des totaux
-    function updateTotals() {
-      let subtotal = 0;
-      const rows = document.querySelectorAll('tbody tr');
-
-      rows.forEach(row => {
-        const quantity = parseInt(row.querySelector('.quantity-amount').value);
-        const priceText = row.querySelector('.product-price')?.textContent || "0";
-        const price = parseFloat(priceText);
-        const total = quantity * price;
-        
-        if (!isNaN(total)) {
-          row.querySelector('.product-total').textContent = total.toFixed(2) + "dt";
-          subtotal += total;
-        }
-      });
-
-      document.querySelectorAll('.cart-subtotal').forEach(el => el.textContent = subtotal.toFixed(2) + "dt");
-      document.querySelectorAll('.cart-total').forEach(el => el.textContent = subtotal.toFixed(2) + "dt");
-    }
-
-    // Appel initial
-    updateTotals();
-  });
-</script>
-<!-- End jsssss Section -->
-
-
-
-
-		<!-- End Hero Section -->
-		<div class="untree_co-section before-footer-section">
-            <div class="container">
-              <div class="row mb-5">
-                <form class="col-md-12" method="post">
-                  <div class="site-blocks-table">
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th class="product-thumbnail">Image</th>
-                          <th class="product-name">Product</th>
-                          <th class="product-price">Price</th>
-                          <th class="product-quantity">Quantity</th>
-                          <th class="product-total">Total</th>
-                          <th class="product-remove">Remove</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      {% for produit in produits %}
-                        <tr>
-                          <td class="product-thumbnail">
-                        {% for image in images %}
-						               {% if image.getproduct().id==produit.id %}
-						                  <img src="{{image.name}}" alt="Image" class="img-fluid">
-							           {% endif %}
-					            	{% endfor %}
-                          </td>
-                          <td class="product-name">
-                            <h2 class="h5 text-black">{{produit.name}}</h2>
-                          </td>
-                          <td class="product-price" data-price="{{ produit.prix }}">{{ produit.prix }} dt</td>
-                          <td>
-                            <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
-                              <div class="input-group-prepend">
-                                <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                              </div>
-                              <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                              <div class="input-group-append">
-                                <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                              </div>
-                            </div>
-        
-                          </td>
-                          <td class="product-total">{{ produit.prix }} dt</td>
-                          <td><a href="#" class="btn btn-black btn-sm remove-item"data-id="{{ produit.id }}">X</a></td>
-                        </tr>
-                         {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
-                </form>
-              </div>
-        
-              <div class="row" >
-                <div class="col-md-6">
-                  <div class="row mb-5">
-                    <div class="col-md-6">
-                     <a href="{{ path('produit.index') }}"> <button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button></a>
-                    </div>
-                  </div>
-                  </div>
-                </div>
-                <div class="col-md-6 pl-5">
-                  <div class="row justify-content-end">
-                    <div class="col-md-7">
-                      <div class="row">
-                        <div class="col-md-12 text-right border-bottom mb-5">
-                          <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
-                        </div>
-                      </div>
-                      <div class="row mb-3">
-                        <div class="col-md-6">
-                          <span class="text-black">Subtotal</span>
-                        </div>
-                        <div class="col-md-6 text-right">
-                          <strong class="text-black"id="cart-subtotal">0.00dt</strong>
-                        </div>
-                      </div>
-                      <div class="row mb-5">
-                        <div class="col-md-6">
-                          <span class="text-black">Total</span>
-                        </div>
-                        <div class="col-md-6 text-right">
-                          <strong class="text-black"id="cart-total">0.00dt</strong>
-                        </div>
-                      </div>
-        
-                      <div class="row">
-                        <div class="col-md-12">
-                         <a href="{{path('confirmation')}}"> <button class="btn btn-black btn-lg py-3 btn-block" >Confirme</button></a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-		
-{% include 'home/footer.html.twig' %}
-		<script src="js/bootstrap.bundle.min.js"></script>
-		<script src="js/tiny-slider.js"></script>
-		<script src="js/custom.js"></script>
+  </script>
+  {% endfor %}
+		<div class="mt-5">
+			{% include 'home/footer.html.twig' %}
+		</div>
+		<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+		<script src="{{ asset('js/tiny-slider.js') }}"></script>
+		<script src="{{ asset('js/custom.js') }}"></script>
 	</body>
-
 </html>

@@ -96,4 +96,23 @@ final class DaschboardController extends AbstractController
         ]
     );
     }
+    #[Route('/edit/{id}', name:'edit')]
+    public function edit(Product $product,Request $request,EntityManagerInterface $en, SluggerInterface $slugger): Response
+    {
+        
+        $form=$this->createForm(ProductType::class,$product);
+        $form->handleRequest($request);
+        if($form->isSubmitted()&&$form->isValid()){
+            $en->persist($product);
+            $en->flush();
+            $this->addFlash('success', 'Le produit a été modifié avec succès');
+            return $this->redirectToRoute('admin');
+        }
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Veuillez remplir tous les champs correctement.');
+        }
+        return $this->render('dashboard/edit.html.twig', [
+            'form'=>$form
+        ]);
+    }
 }
