@@ -5,9 +5,11 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface,PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -53,6 +55,13 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Cart::class, mappedBy: 'user')]
     private Collection $carts;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image_profile = null;
+    
+
+    #[ORM\Column]
+    private bool $isVerified = false;
 
     public function __construct()
     {
@@ -130,6 +139,10 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface
     {
         $roles =$this->roles;
         $roles[]='ROLE_USER';
+       if($this->isVerified()){
+
+ $roles[]='ROLE_VERIFIED';
+       }
         return array_unique($roles);
     }
 
@@ -247,6 +260,30 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface
                 $cart->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getImageProfile(): ?string
+    {
+        return $this->image_profile;
+    }
+
+    public function setImageProfile(?string $image_profile): static
+    {
+        $this->image_profile = $image_profile;
+
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }
