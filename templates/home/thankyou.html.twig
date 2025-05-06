@@ -65,14 +65,36 @@
   </div>
   {% for message in app.flashes('success') %}
   <script>
-      Swal.fire({
-          icon: 'success',
-          title: 'Succès',
-          text: '{{ message }}',
-          confirmButtonText: 'OK',
-          confirmButtonColor: '#198754'
-      });
-  </script>
+Swal.fire({
+    title: 'Commande validée',
+    text: 'Souhaitez-vous recevoir un email de confirmation ?',
+    icon: 'success',
+    showCancelButton: true,
+    confirmButtonText: 'Oui, envoyer l’email',
+    cancelButtonText: 'Non merci'
+}).then((result) => {
+    if (result.isConfirmed) {
+        // Appel de la route Symfony via fetch
+        fetch('{{ path("email", {"id": app.user.id}) }}')
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire(
+                        'Email envoyé',
+                        'Le message de confirmation a été envoyé avec succès.',
+                        'success'
+                    );
+                } else {
+                    Swal.fire(
+                        'Erreur',
+                        'L’envoi de l’email a échoué.',
+                        'error'
+                    );
+                }
+            });
+    }
+});
+</script>
+
   {% endfor %}
 {% include 'home/footer.html.twig' %}
 		<script src="js/bootstrap.bundle.min.js"></script>

@@ -8,12 +8,14 @@ use App\Entity\Commande;
 use App\Entity\DetailCommande;
 use Symfony\Component\Mime\Email;
 use App\Repository\CartRepository;
+use App\Repository\UserRepository;
 use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
 use App\Repository\CommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\DetailCommandeRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -177,37 +179,61 @@ public function validerCommande(
     }
 
     $em->flush();
-      // 4. Envoi de l'email de confirmation
-    /*  $email = (new Email())
-      ->from('noreply@votreboutique.com')  // Adresse d'envoi
-      ->to($user->getEmail())  // Adresse du destinataire
-      ->subject('Confirmation de votre commande')
-      ->html(
-          '<p>Bonjour ' . $user->getFirstname() . ',</p>' .
-          '<p>Votre commande a été validée avec succès !</p>' .
-          '<p>Montant total de la commande : ' . $montantTotal . '€</p>' .
-          '<p>Merci pour votre achat !</p>'
-      );
-
-  try {
-      $mailer->send($email);
-  } catch (\Exception $e) {
-      $this->addFlash('error', 'L\'envoi de l\'email a échoué.');
-  }
-*/
     $this->addFlash('success', 'Commande validée avec succès !');
     return $this->redirectToRoute('confirmation');
 }
+
+
+
+#[Route('/email/{id}', name: 'email')]
+public function email($id, UserRepository $userRepo, MailerInterface $mailer, CommandeRepository $cmd): Response
+{
+    $user = $userRepo->find($id);
+
+    if ($user === null) {
+        throw $this->createNotFoundException('Utilisateur non trouvé');
+    }
+
+    $firstname = htmlspecialchars($user->getFirstname(), ENT_QUOTES, 'UTF-8');
+
+    $htmlContent = <<<HTML
+    <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f8f9fa; color: #333;">
+        <h2 style="color: #007bff;">Bonjour $firstname,</h2>
+        <p>Votre commande a été <strong>validée avec succès</strong> !</p>
+        <p>Merci pour votre confiance et votre achat.</p>
+        <div style="margin-top: 20px; padding: 15px; background-color: #e9ecef; border-radius: 5px;">
+            <p><strong>Numéro du livreur :</strong> <span style="font-size: 18px; color: #28a745;">93164748</span></p>
+        </div>
+        <p style="margin-top: 30px;">Cordialement,<br>L’équipe de livraison</p>
+    </div>
+    HTML;
+
+    $email = (new Email())
+        ->from('rahmabassou3@gmail.com')
+        ->to($user->getEmail())
+        ->subject('Confirmation de votre commande')
+        ->html($htmlContent);
+
+    try {
+        $mailer->send($email);
+        $this->addFlash('success', 'Email envoyé avec succès.');
+    } catch (\Exception $e) {
+        $this->addFlash('error', 'L\'envoi de l\'email a échoué : ' . $e->getMessage());
+    }
+
+    return $this->render('home/thankyou.html.twig');
+}
+
+
 #[Route('/commande/details', name: 'commande_details')]
 public function showDetails(
     CommandeRepository $commandeRepo,
     DetailCommandeRepository $detailRepo
 ): Response {
-    $user = $this->getUser();
 
     // Récupérer la dernière commande de l'utilisateur (tu peux adapter selon ton besoin)
     $commande = $commandeRepo->findBy(
-        ['no' => $user],
+        [],
         ['created_at' => 'DESC']
     );
 
