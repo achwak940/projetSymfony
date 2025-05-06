@@ -24,14 +24,28 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 final class HomeController extends AbstractController
 {
     #[Route('/home', name: 'app_home')]
-    public function index(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
-    {
-        $user = $this->getUser(); 
-        return $this->render('home/pageAcceuil.html.twig', [
-            'controller_name' => 'HomeController',
-            'user'=>$user
-        ]);
-    }
+public function index(
+    Request $request,
+    EntityManagerInterface $em,
+    UserPasswordHasherInterface $hasher,
+    ProductRepository $productRepo,
+    ImageRepository $imageRepo // Ajout du repository pour les images
+): Response {
+    $user = $this->getUser();
+    // Récupérer les derniers produits avec leurs images
+    $lastProducts = $productRepo->findLastThreeProducts();
+    
+    // Optionnellement, récupérer toutes les images si nécessaire (ici cela dépend de la logique du projet)
+    // $allImages = $imageRepo->findAll(); // Si tu veux toutes les images, mais cela peut être inutile
+
+    return $this->render('home/pageAcceuil.html.twig', [
+        'controller_name' => 'HomeController',
+        'user' => $user,
+        'lastProducts' => $lastProducts // Passer les produits avec images à la vue
+    ]);
+}
+
+    
     #[Route('/contact', name: 'contact')]
     public function contact(): Response
     {

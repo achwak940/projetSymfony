@@ -93,6 +93,21 @@
                 {% endfor %}
 				</div>	
 		    </div>
+			  <div class="pagination">
+            <!-- Case à cocher invisible pour chaque page -->
+            <input type="radio" name="pagination" id="page-1" checked>
+            <input type="radio" name="pagination" id="page-2">
+            <!-- Ajoutez plus de inputs pour plus de pages -->
+
+            <!-- Boutons de pagination -->
+            <div class="pagination-controls">
+                <label for="page-1" class="page-btn">1</label>
+                <label for="page-2" class="page-btn">2</label>
+                <!-- Ajoutez plus de labels pour plus de pages -->
+            </div>
+        </div>
+    </div>
+</div
 		</div>
 		{% include 'home/footer.html.twig' %}
 

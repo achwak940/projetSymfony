@@ -29,22 +29,36 @@ final class DaschboardController extends AbstractController
     ]);
     }
     #[Route('/admin', name: 'admin')]
-    public function admin(Request $request,ProductRepository $repository,ImageRepository $image,EntityManagerInterface $en,UserRepository $user,CommandeRepository $cmd): Response
-    {  
-        $produits= $repository->findAll();
-        $images=$image->findALl();
+    public function admin(
+        Request $request,
+        ProductRepository $repository,
+        ImageRepository $image,
+        EntityManagerInterface $en,
+        UserRepository $user,
+        CommandeRepository $cmd
+    ): Response
+    {
+        $page = $request->query->getInt('page', 1); // récupère le n° de page depuis l'URL (ex: ?page=2)
+        $limit = 10; // nombre de produits par page
+    
+        // Récupération paginée des produits
+        $pagination = $repository->findPaginatedProduits($page, $limit);
+        $images = $image->findAll();
         $productCount = $repository->count([]);
         $userCount = $user->count([]);
         $cmdCount = $cmd->count([]);
-        return $this->render('dashboard/admin.html.twig',[
-            'produits'=>
-            $produits,
-            'images'=>$images,
-            'nbr_produit'=>$productCount,
-            'nbr_user'=>$userCount,
-            'nbr_cmd'=>$cmdCount
+    
+        return $this->render('dashboard/admin.html.twig', [
+            'produits' => $pagination['data'],      // produits paginés
+            'images' => $images,
+            'nbr_produit' => $productCount,
+            'nbr_user' => $userCount,
+            'nbr_cmd' => $cmdCount,
+            'current_page' => $page,
+            'total_pages' => ceil($pagination['total'] / $limit),
         ]);
     }
+    
     #[Route('/create', name:'ajouter')]
     public function create(Request $request,EntityManagerInterface $en, SluggerInterface $slugger): Response
     {
