@@ -1,109 +1,155 @@
 {% include 'dashboard/interface.html.twig' %}
-        <!-- Page Content -->
-        <div class="page-content w-100">
-            <!-- Topbar -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-4 py-2">
-                <div class="container-fluid">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-bars me-3 text-success"></i>
-                        <h4 class="mb-0 text-success">Détails de la commande</h4>
+
+<!-- Page Content -->
+<div class="page-content w-100">
+    <!-- Topbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-4 py-2">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-shopping-cart me-3 text-success"></i>
+                <h4 class="mb-0 text-success">Détails de la commande</h4>
+            </div>
+            <a href="{{ path('admin') }}" class="btn btn-outline-success">
+                <i class="fas fa-arrow-left me-2"></i>Retour
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content p-4">
+        {% for item in commandesAvecDetails %}
+            {% set commande = item.commande %}
+            {% set details = item.details %}
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0 text-success">
+                                <i class="fas fa-info-circle me-2"></i>Informations de la commande
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted">ID Commande</span>
+                                <span class="fw-bold">#{{ commande.no.id }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted">Date</span>
+                                <span>{{ commande.createdAt|date('d/m/Y H:i') }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted">Statut</span>
+                                <span class="badge {% if commande.statut == 'En cours' %}bg-warning
+                                    {% elseif commande.statut == 'Livrée' %}bg-success
+                                    {% else %}bg-danger{% endif %} px-3 py-2">
+                                    {{ commande.statut }}
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Total</span>
+                                <span class="fw-bold text-success">{{ commande.montantTotal }} dt</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </nav>
 
-            <!-- Main Content -->
-            <div class="main-content">
-                <div class="row justify-content-center">
-                    <div class="col-md-8">
-                        <div class="card shadow">
-                            <div class="card-header bg-white">
-                                <h5 class="mb-0">Commande n°{{ commande.no.id }}</h5>
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0 text-success">
+                                <i class="fas fa-user me-2"></i>Informations du client
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted">Nom</span>
+                                <span>{{ commande.no.firstname }} {{ commande.no.lastname }}</span>
                             </div>
-                            <div class="card-body">
-                                <div class="row mb-4">
-                                    <div class="col-md-6">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h6 class="card-title text-muted">Informations de la commande</h6>
-                                                <p class="mb-2"><strong>Date :</strong> {{ commande.createdAt|date('d/m/Y H:i') }}</p>
-                                                <p class="mb-2"><strong>Statut :</strong> 
-                                                    <span class="badge {% if commande.statut == 'En cours' %}bg-warning{% elseif commande.statut == 'Livrée' %}bg-success{% else %}bg-danger{% endif %}">
-                                                        {{ commande.statut }}
-                                                    </span>
-                                                </p>
-                                                <p class="mb-0"><strong>Total :</strong> {{ commande.montantTotal }} dt</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h6 class="card-title text-muted">Informations du client</h6>
-                                                <p class="mb-2"><strong>Nom :</strong> {{ commande.no.firstname }}</p>
-                                                <p class="mb-2"><strong>Email :</strong> {{ commande.no.email }}</p>
-                                                <p class="mb-0"><strong>Téléphone :</strong> {{ commande.no.telephone }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Produit</th>
-                                                <th>Quantité</th>
-                                                <th>Prix unitaire</th>
-                                                <th>Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for detail in details %}
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            {% if detail.product.getImage() is not empty and detail.product.getImage()[0] is defined %}
-                                                                <img src="{{ detail.product.getImage()[0].name }}" alt="{{ detail.product.name }}" class="img-thumbnail me-2" style="width: 50px; height: 50px; object-fit: cover;">
-                                                            {% endif %}
-                                                            {{ detail.product.name }}
-                                                        </div>
-                                                    </td>
-                                                    <td>{{ detail.quantite }}</td>
-                                                    <td>{{ detail.prixUnitaire }} dt</td>
-                                                    <td>{{ detail.quantite * detail.prixUnitaire }} dt</td>
-                                                </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td colspan="3" class="text-end"><strong>Total TTC</strong></td>
-                                                <td><strong>{{ commande.montantTotal }} dt</strong></td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-
-                                <div class="mt-4">
-                                    <a href="{{ path('admin') }}" class="btn btn-outline-success">
-                                        <i class="fas fa-arrow-left me-2"></i>Retour
-                                    </a>
-                                </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted">Email</span>
+                                <span>{{ commande.no.email }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Téléphone</span>
+                                <span>{{ commande.no.telephone }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Flash Messages - SweetAlert2 -->
-        {% for message in app.flashes('success') %}
-            <script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Succès',
-                    text: '{{ message }}',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#198754'
-                });
-            </script>
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 text-success">
+                        <i class="fas fa-box me-2"></i>Produits commandés
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Produit</th>
+                                    <th class="text-center">Quantité</th>
+                                    <th class="text-end">Prix unitaire</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detail in details %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if detail.product.getImage() is not empty and detail.product.getImage()[0] is defined %}
+                                                    <img src="{{ detail.product.getImage()[0].name }}" 
+                                                         alt="{{ detail.product.name }}" 
+                                                         class="img-thumbnail me-3" 
+                                                         style="width: 50px; height: 50px; object-fit: cover;">
+                                                {% endif %}
+                                                <span>{{ detail.product.name }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-light text-dark">{{ detail.quantite }}</span>
+                                        </td>
+                                        <td class="text-end">{{ detail.prixUnitaire }} dt</td>
+                                        <td class="text-end fw-bold">{{ detail.quantite * detail.prixUnitaire }} dt</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total TTC</strong></td>
+                                    <td class="text-end"><strong class="text-success">{{ commande.montantTotal }} dt</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <hr class="my-4">
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                <p class="text-muted mb-0">Aucune commande trouvée</p>
+            </div>
         {% endfor %}
+    </div>
+</div>
+
+<!-- Flash Messages - SweetAlert2 -->
+{% for message in app.flashes('success') %}
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: '{{ message }}',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#198754'
+        });
+    </script>
+{% endfor %}

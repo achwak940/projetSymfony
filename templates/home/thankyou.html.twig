@@ -12,6 +12,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="author" content="Untree.co">
   <link rel="shortcut icon" href="favicon.png">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <meta name="description" content="" />
   <meta name="keywords" content="bootstrap, bootstrap4" />
@@ -62,10 +63,20 @@
       </div>
     </div>
   </div>
+  {% for message in app.flashes('success') %}
+  <script>
+      Swal.fire({
+          icon: 'success',
+          title: 'Succès',
+          text: '{{ message }}',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#198754'
+      });
+  </script>
+  {% endfor %}
 {% include 'home/footer.html.twig' %}
 		<script src="js/bootstrap.bundle.min.js"></script>
 		<script src="js/tiny-slider.js"></script>
 		<script src="js/custom.js"></script>
 	</body>
-
 </html>

@@ -136,17 +136,6 @@
 				</div>
 			</div>
 		</div>
-{% for message in app.flashes('success') %}
-  <script>
-      Swal.fire({
-          icon: 'success',
-          title: 'Succès',
-          text: '{{ message }}',
-          confirmButtonText: 'OK',
-          confirmButtonColor: '#198754'
-      });
-  </script>
-  {% endfor %}
 		<div class="mt-5">
 			{% include 'home/footer.html.twig' %}
 		</div>

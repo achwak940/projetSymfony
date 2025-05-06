@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Product;
 use App\Entity\Commande;
 use App\Entity\DetailCommande;
+use Symfony\Component\Mime\Email;
 use App\Repository\CartRepository;
 use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
@@ -18,6 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 final class HomeController extends AbstractController
 {
@@ -161,7 +163,24 @@ public function validerCommande(
     }
 
     $em->flush();
+      // 4. Envoi de l'email de confirmation
+    /*  $email = (new Email())
+      ->from('noreply@votreboutique.com')  // Adresse d'envoi
+      ->to($user->getEmail())  // Adresse du destinataire
+      ->subject('Confirmation de votre commande')
+      ->html(
+          '<p>Bonjour ' . $user->getFirstname() . ',</p>' .
+          '<p>Votre commande a été validée avec succès !</p>' .
+          '<p>Montant total de la commande : ' . $montantTotal . '€</p>' .
+          '<p>Merci pour votre achat !</p>'
+      );
 
+  try {
+      $mailer->send($email);
+  } catch (\Exception $e) {
+      $this->addFlash('error', 'L\'envoi de l\'email a échoué.');
+  }
+*/
     $this->addFlash('success', 'Commande validée avec succès !');
     return $this->redirectToRoute('confirmation');
 }
@@ -173,7 +192,7 @@ public function showDetails(
     $user = $this->getUser();
 
     // Récupérer la dernière commande de l'utilisateur (tu peux adapter selon ton besoin)
-    $commande = $commandeRepo->findOneBy(
+    $commande = $commandeRepo->findBy(
         ['no' => $user],
         ['created_at' => 'DESC']
     );
@@ -182,11 +201,18 @@ public function showDetails(
         throw $this->createNotFoundException('Aucune commande trouvée.');
     }
 
-    $details = $detailRepo->findBy(['commande' => $commande]);
+     // Associer les détails à chaque commande
+     $commandesAvecDetails = [];
+     foreach ($commande as $commande) {
+         $details = $detailRepo->findBy(['commande' => $commande]);
+         $commandesAvecDetails[] = [
+             'commande' => $commande,
+             'details' => $details,
+         ];
+     }
 
-    return $this->render('dashboard/details.html.twig', [
-        'commande' => $commande,
-        'details' => $details
+     return $this->render('dashboard/details.html.twig', [
+        'commandesAvecDetails' => $commandesAvecDetails,
     ]);
 }
 
