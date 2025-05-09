@@ -1,76 +1,172 @@
+<style>
+/* Styles généraux */
+.dropdown-toggle {
+    transition: all 0.2s;
+}
 
+.dropdown-toggle:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+}
+
+.dropdown-menu {
+    min-width: 220px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    transition: color 0.3s ease;
+    padding: 0.5rem 1rem;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+}
+
+/* Style pour l'image de profil */
+.profile-image {
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+	
+}
+
+.profile-image:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+/* Dropdown utilisateur amélioré */
+.user-dropdown {
+    margin-left: 1rem;
+}
+
+.user-dropdown .dropdown-toggle::after {
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+
+.user-dropdown .dropdown-menu {
+    padding: 0.5rem 0;
+}
+
+.user-dropdown .dropdown-item {
+    padding: 0.5rem 1.5rem;
+    transition: all 0.2s;
+}
+
+.user-dropdown .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding-left: 1.75rem;
+}
+
+.user-dropdown .dropdown-header {
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.user-dropdown .dropdown-divider {
+    border-color: rgba(255, 255, 255, 0.1);
+    margin: 0.5rem 0;
+}
+
+/* Icône panier */
+.cart-icon {
+    height: 24px;
+    transition: transform 0.3s ease;
+}
+
+.cart-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-image {
+        width: 36px;
+        height: 36px;
+	
+    }
+    
+    .user-dropdown .dropdown-menu {
+        margin-top: 0.5rem;
+    }
+	
+}
+</style>
 <nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
-	<div class="container">
-		<a class="navbar-brand" href="index.html">MyFurniture<span></span>
-		</a>
+    <div class="container">
+        <a class="navbar-brand" href="index.html">MyFurniture<span></span></a>
 
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-		<div class="collapse navbar-collapse" id="navbarsFurni">
-			<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-				<li class="nav-item active">
-					<a class="nav-link" href="{{ path('app_home') }}">Home</a>
-				</li>
-				<li>
-					<a class="nav-link" href="{{ path('produit.index') }}">Shop</a>
-				</li>
-				<li>
-					<a class="nav-link" href="{{ path('about') }}">About us</a>
-				</li>
-				<li>
-					<a class="nav-link" href="{{ path('contact') }}">Contact us</a>
-				</li>
+        <div class="collapse navbar-collapse" id="navbarsFurni">
+            <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ path('app_home') }}">Home</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{{ path('produit.index') }}">Shop</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{{ path('about') }}">About us</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{{ path('contact') }}">Contact us</a>
+                </li>
 
-				{% if app.user %}
-					{% if 'ROLE_ADMIN' in app.user.roles %}
-						<li>
-							<a class="nav-link" href="{{ path('admin') }}">Dashboard</a>
-						</li>
+                {% if app.user %}
+                    {% if 'ROLE_ADMIN' in app.user.roles %}
+                        <li>
+                            <a class="nav-link" href="{{ path('admin') }}">Dashboard</a>
+                        </li>
+                    {% elseif 'ROLE_CLIENT' in app.user.roles %}
+                        <li>
+                            <a class="nav-link" href="">Order History</a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <a class="nav-link" href="{{ path('cart_show') }}"><img src="{{ asset('images/cart.svg') }}" alt="Cart" style="height: 20px;"></a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a class="nav-link" href="{{ path('app_login') }}">Login</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{{path('app_register')}}">Register</a>
+                    </li>
+                {% endif %}
+            </ul>
 
-					{% elseif 'ROLE_CLIENT' in app.user.roles %}
-						<li>
-							<a class="nav-link" href="">Order History</a>
-						</li>
-
-					{% endif %}
-					<li>
-						<a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
-					</li>
-					<li>
-					<a class="nav-link" href="{{ path('cart_show') }}"><img src="{{ asset('images/cart.svg') }}"></a>
-				</li>
-				{% else %}
-					<li>
-						<a class="nav-link" href="{{ path('app_login') }}">Login</a>
-					</li>
-					<li>
-						<a class="nav-link" href="{{path('app_register')}}">Register</a>
-					</li>
-				{% endif %}
-			</ul>
-
-			<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-				{% if app.user and app.user.roles is defined %}
-					{% if 'ROLE_ADMIN' in app.user.roles %}
-						<li>
-							<a class="nav-link" href="#"><img src="{{ asset('images/user.svg') }}"></a>
-                               <p>Hello {{ app.user.firstname }} {{ app.user.lastname }}! ✅</p>
-						</li>
-					{% endif %}
-				{% endif %}
-				{% if app.user and app.user.roles is defined %}
-					{% if 'ROLE_CLIENT' in app.user.roles %}
-						<li>
-							<a class="nav-link" href="#"><img src="{{ asset('images/user.svg') }}"></a>
-                               <p>Hello {{ app.user.firstname }} {{ app.user.lastname }}! ✅</p>
-                               
-						</li>
-					{% endif %}
-				{% endif %}
-				
-			</ul>
-		</div>
-	</div>
+            {% if app.user %}
+            <div class="dropdown ms-3">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if app.user.imageProfile %}
+                      <img src="{{ asset(app.user.imageProfile) }}" alt="Profile" class="rounded-circle me-2" width="64" height="64" style="object-fit: cover;">
+                    {% else %}
+                        <img src="{{ asset('images/user.svg') }}" alt="Profile" class="rounded-circle me-2" width="32" height="32">
+                    {% endif %}
+                    <span class="d-none d-sm-inline">{{ app.user.firstname }}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser">
+                    <li><span class="dropdown-item">Edit Profil</span></li>
+                    <li><hr class="dropdown-divider"></li>
+                    {% if 'ROLE_CLIENT' in app.user.roles %}
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><a class="dropdown-item" href="#">Order History</a></li>
+                    {% endif %}
+                    <li><a class="dropdown-item" href="{{ path('app_logout') }}">Sign out</a></li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </nav>
