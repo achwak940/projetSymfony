@@ -1,0 +1,544 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #3b5d50;
+            --primary-light: #6d8b7d;
+            --secondary-color: #4a7c64;
+            --accent-color: #8fb3a5;
+            --light-gray: #f8f9fa;
+            --dark-gray: #2c3e50;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --input-focus: 0 0 0 3px rgba(59, 93, 80, 0.15);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f0ec 100%);
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--dark-gray);
+            line-height: 1.7;
+        }
+        
+        .profile-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+            transition: var(--transition);
+            border: 1px solid rgba(59, 93, 80, 0.1);
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .profile-header {
+            padding: 40px;
+            background: white;
+            text-align: center;
+            border-bottom: 1px solid rgba(59, 93, 80, 0.1);
+            position: relative;
+        }
+        
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+        
+        .image-upload-wrapper {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .image-preview {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            border: 5px solid white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            background-color: #f5f9f7;
+            transition: var(--transition);
+        }
+        
+        .image-preview:hover {
+            transform: scale(1.03);
+        }
+        
+        .image-upload-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: var(--primary-color);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(59, 93, 80, 0.3);
+            transition: var(--transition);
+            border: none;
+            z-index: 2;
+        }
+        
+        .image-upload-btn:hover {
+            background: var(--secondary-color);
+            transform: scale(1.1) rotate(10deg);
+        }
+        
+        .profile-info {
+            margin-top: 20px;
+        }
+        
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 10px 0 5px;
+            color: var(--dark-gray);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .profile-name::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .profile-email {
+            color: var(--primary-color);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+        
+        .card-body {
+            padding: 40px;
+        }
+        
+        .form-section {
+            margin-bottom: 35px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 15px;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--dark-gray);
+            transition: var(--transition);
+        }
+        
+        .input-icon-wrapper {
+            position: relative;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            border: 1px solid #e0e8e4;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background-color: white;
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-gray);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: var(--input-focus);
+            outline: none;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus + .input-icon {
+            color: var(--secondary-color);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-weight: 500;
+            border-radius: 50px;
+            transition: var(--transition);
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(59, 93, 80, 0.3);
+            width: 100%;
+            margin-top: 20px;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(59, 93, 80, 0.4);
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+        }
+        
+        .btn-save i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .btn-save::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 40px;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(30deg);
+            transition: var(--transition);
+        }
+        
+        .btn-save:hover::after {
+            left: 120%;
+        }
+        
+        .form-switch {
+            padding-left: 3.5em;
+        }
+        
+        .form-switch .form-check-input {
+            width: 50px;
+            height: 26px;
+            margin-left: -3.5em;
+            background-color: #e0e8e4;
+            border: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+        }
+        
+        .form-switch .form-check-input:checked {
+            background-color: var(--primary-color);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+        }
+        
+        .form-check-label {
+            margin-left: 15px;
+            font-size: 0.95rem;
+            color: var(--dark-gray);
+            font-weight: 500;
+        }
+        
+        .invalid-feedback {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: block;
+        }
+        
+        .is-invalid {
+            border-color: #e74c3c !important;
+        }
+        
+        .is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2) !important;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .profile-container {
+                padding: 0 15px;
+            }
+            
+            .card-body {
+                padding: 30px 20px;
+            }
+            
+            .profile-header {
+                padding: 30px 20px;
+            }
+            
+            .image-preview {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .btn-save {
+                padding: 12px 25px;
+            }
+        }
+        .btn-save {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;  /* Réduit de 15px 35px */
+    font-weight: 500;
+    border-radius: 6px;   /* Arrondi plus subtil */
+    transition: var(--transition);
+    cursor: pointer;
+    font-size: 0.9rem;   /* Taille de police réduite */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(59, 93, 80, 0.2); /* Ombre plus légère */
+    width: auto;         /* Largeur automatique */
+    margin-top: 15px;
+    height: 38px;        /* Hauteur fixe */
+}
+
+.btn-save:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 93, 80, 0.3);
+}
+
+.btn-save i {
+    font-size: 0.9rem;   /* Taille d'icône réduite */
+    margin-right: 8px;   /* Espacement réduit */
+}
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="profile-container">
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    
+    <div class="profile-card">
+        <!-- En-tête avec photo de profil -->
+        <div class="profile-header">
+            <div class="image-upload-wrapper">
+                <div id="image-preview" class="image-preview" style="background-image: url('{{ app.user.imageProfile ? app.user.imageProfile : '' }}'); {{ app.user.imageProfile ? '' : 'display: flex;' }}">
+                    {% if not app.user.imageProfile %}
+                        <i class="fas fa-user" style="font-size: 3rem; color: #d1e0d9;"></i>
+                    {% endif %}
+                </div>
+                <label for="{{ form.image_profile.vars.id }}" class="image-upload-btn" title="Changer la photo">
+                    <i class="fas fa-camera"></i>
+                </label>
+                {{ form_widget(form.image_profile, {'attr': {'class': 'd-none' ~ (form.image_profile.vars.errors|length ? ' is-invalid' : '') }}) }}
+            </div>
+            
+            <div class="profile-info">
+                <div class="profile-name">{{ app.user.firstname }} {{ app.user.lastname }}</div>
+                <div class="profile-email">{{ app.user.email }}</div>
+            </div>
+        </div>
+        
+        <!-- Corps du formulaire -->
+        <div class="card-body">
+            <!-- Section Informations personnelles -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-user-tie"></i> Informations personnelles
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        {{ form_label(form.lastname, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+                        <div class="input-icon-wrapper">
+                            <div class="input-icon">
+                                <i class="fas fa-signature"></i>
+                            </div>
+                            {{ form_widget(form.lastname, {'attr': {'class': 'form-control' ~ (form.lastname.vars.errors|length ? ' is-invalid' : '') }}) }}
+                        </div>
+                        {{ form_errors(form.lastname) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.firstname, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
+                        <div class="input-icon-wrapper">
+                            <div class="input-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            {{ form_widget(form.firstname, {'attr': {'class': 'form-control' ~ (form.firstname.vars.errors|length ? ' is-invalid' : '') }}) }}
+                        </div>
+                        {{ form_errors(form.firstname) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Coordonnées -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-address-card"></i> Coordonnées
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                        <div class="input-icon-wrapper">
+                            <div class="input-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            {{ form_widget(form.email, {'attr': {'class': 'form-control' ~ (form.email.vars.errors|length ? ' is-invalid' : '') }}) }}
+                        </div>
+                        {{ form_errors(form.email) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.telephone, 'Téléphone', {'label_attr': {'class': 'form-label'}}) }}
+                        <div class="input-icon-wrapper">
+                            <div class="input-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            {{ form_widget(form.telephone, {'attr': {'class': 'form-control' ~ (form.telephone.vars.errors|length ? ' is-invalid' : '') }}) }}
+                        </div>
+                        {{ form_errors(form.telephone) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.adress, 'Adresse', {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-icon-wrapper">
+                        <div class="input-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        {{ form_widget(form.adress, {'attr': {'class': 'form-control' ~ (form.adress.vars.errors|length ? ' is-invalid' : '') }}) }}
+                    </div>
+                    {{ form_errors(form.adress) }}
+                </div>
+            </div>
+
+            <!-- Section Sécurité -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-shield-alt"></i> Sécurité
+                </div>
+                
+                <div class="form-group">
+                    {{ form_label(form.password, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-icon-wrapper">
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        {{ form_widget(form.password, {'attr': {'class': 'form-control' ~ (form.password.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Laissez vide pour ne pas changer' }}) }}
+                    </div>
+                    {{ form_errors(form.password) }}
+                    <small class="text-muted" style="color: #8fb3a5; font-size: 0.85rem; display: block; margin-top: 8px;">
+                        <i class="fas fa-info-circle"></i>
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check form-switch">
+                        {{ form_widget(form.isVerified, {'attr': {'class': 'form-check-input' ~ (form.isVerified.vars.errors|length ? ' is-invalid' : '') }}) }}
+                        {{ form_label(form.isVerified, 'Compte vérifié', {'label_attr': {'class': 'form-check-label'}}) }}
+                        {{ form_errors(form.isVerified) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bouton de soumission -->
+            <div class="form-group">
+                <button type="submit" class="btn-save" id="save-button">
+                    <i class="fas fa-save"></i> Enregistrer les modifications
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    {{ form_end(form) }}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+
+{% endblock %}
