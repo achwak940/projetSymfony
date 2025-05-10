@@ -22,6 +22,7 @@ class RegistrationFormType extends AbstractType
         ->add('firstname')
         ->add('adress')
         ->add('telephone')
+        ->add('imageProfile')
             ->add('email')
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
@@ -48,7 +49,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('save',SubmitType::class)
+        
         ;
     }
 
