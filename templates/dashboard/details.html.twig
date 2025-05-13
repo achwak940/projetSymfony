@@ -14,7 +14,42 @@
             </a>
         </div>
     </nav>
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
 
+    .pagination a {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 0.375rem;
+        text-decoration: none;
+        color: #333;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .pagination a:hover:not(.active):not(.disabled) {
+        background-color: #f0f0f0;
+    }
+
+    .pagination a.active {
+        background-color:rgb(61, 102, 64);
+        color: #fff;
+        border-color:rgb(73, 114, 70);
+        font-weight: bold;
+    }
+
+    .pagination a.disabled {
+        pointer-events: none;
+        color: #aaa;
+        border-color: #eee;
+        background-color: #f9f9f9;
+    }
+</style>
     <!-- Main Content -->
     <div class="main-content p-4">
         {% for item in commandesAvecDetails %}
@@ -139,6 +174,32 @@
             </div>
         {% endfor %}
     </div>
+    <div class="pagination">
+    {# Lien "précédent" #}
+    {% if page > 1 %}
+        <a href="{{ path('commande_details', {'page': page - 1}) }}">&laquo;</a>
+    {% else %}
+        <a class="disabled">&laquo;</a>
+    {% endif %}
+
+    {# Pages numérotées #}
+    {% set total_pages = (total / limit)|round(0, 'ceil') %}
+    {% for i in 1..total_pages %}
+        {% if i == page %}
+            <a class="active" href="{{ path('commande_details', {'page': i}) }}">{{ i }}</a>
+        {% else %}
+            <a href="{{ path('commande_details', {'page': i}) }}">{{ i }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {# Lien "suivant" #}
+    {% if page < total_pages %}
+        <a href="{{ path('commande_details', {'page': page + 1}) }}">&raquo;</a>
+    {% else %}
+        <a class="disabled">&raquo;</a>
+    {% endif %}
+</div>
+
 </div>
 
 <!-- Flash Messages - SweetAlert2 -->

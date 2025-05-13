@@ -227,32 +227,33 @@ public function email($id, UserRepository $userRepo, MailerInterface $mailer, Co
 
 #[Route('/commande/details', name: 'commande_details')]
 public function showDetails(
+    Request $request,
     CommandeRepository $commandeRepo,
     DetailCommandeRepository $detailRepo
 ): Response {
+    $page = max(1, $request->query->getInt('page', 1));
+    $limit = 3;
 
-    // Récupérer la dernière commande de l'utilisateur (tu peux adapter selon ton besoin)
-    $commande = $commandeRepo->findBy(
-        [],
-        ['created_at' => 'DESC']
-    );
+    $pagination = $commandeRepo->findPaginatedCommandes($page, $limit);
 
-    if (!$commande) {
+    if (!$pagination['data']) {
         throw $this->createNotFoundException('Aucune commande trouvée.');
     }
 
-     // Associer les détails à chaque commande
-     $commandesAvecDetails = [];
-     foreach ($commande as $commande) {
-         $details = $detailRepo->findBy(['commande' => $commande]);
-         $commandesAvecDetails[] = [
-             'commande' => $commande,
-             'details' => $details,
-         ];
-     }
+    $commandesAvecDetails = [];
+    foreach ($pagination['data'] as $commande) {
+        $details = $detailRepo->findBy(['commande' => $commande]);
+        $commandesAvecDetails[] = [
+            'commande' => $commande,
+            'details' => $details,
+        ];
+    }
 
-     return $this->render('dashboard/details.html.twig', [
+    return $this->render('dashboard/details.html.twig', [
         'commandesAvecDetails' => $commandesAvecDetails,
+        'total' => $pagination['total'],
+        'page' => $page,
+        'limit' => $limit,
     ]);
 }
 

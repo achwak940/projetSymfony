@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Commande;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Commande>
@@ -40,5 +41,21 @@ class CommandeRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findPaginatedCommandes(int $page, int $limit): array
+    {
+        $query = $this->createQueryBuilder('c')
+            ->orderBy('c.created_at', 'DESC') // Tri par date de création
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+    
+        $paginator = new Paginator($query, true);
+    
+        return [
+            'data' => iterator_to_array($paginator),
+            'total' => count($paginator),
+        ];
+    }
 
 }
