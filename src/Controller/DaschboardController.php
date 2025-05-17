@@ -92,6 +92,10 @@ final class DaschboardController extends AbstractController
     #[Route('/delete/{id}', name:'delete',methods:['DELETE'])]
     public function delete(Product $product,EntityManagerInterface $en): Response
     {
+        // Supprimer d'abord les détails de commande liés
+    foreach ($product->getDetailsCommande() as $detail) {
+        $en->remove($detail);
+    }
         foreach ($product->getImage() as $img) {
             $en->remove($img);
         }

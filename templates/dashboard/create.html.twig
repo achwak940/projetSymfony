@@ -107,11 +107,8 @@
                 text: '{{ message }}',
                 confirmButtonText: 'OK',
                 confirmButtonColor: '#dc3545'
-            }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = '{{ path("admin") }}';  // Redirige après confirmation
-            }
-        });
+            })
+       
         </script>
     {% endfor %}*
 </body>

@@ -16,7 +16,7 @@
                             <span class="input-group-text bg-white">
                                 <i class="fas fa-search text-muted"></i>
                             </span>
-                            <input type="text" class="form-control" placeholder="Rechercher un client...">
+                            <input type="text" id="searchClient"  class="form-control" placeholder="Rechercher un client...">
                         </div>
                     </div>
                 </div>
@@ -139,4 +139,19 @@
         box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
     }
 </style>
+<script>
+    document.getElementById('searchClient').addEventListener('keyup', function () {
+        let search = this.value.toLowerCase().trim();
+        let rows = document.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            let text = row.textContent.toLowerCase();
+            if (text.includes(search)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
 </rewritten_file>
