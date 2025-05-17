@@ -5,114 +5,139 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="author" content="Untree.co">
   <link rel="shortcut icon" href="favicon.png">
-
   <meta name="description" content="" />
   <meta name="keywords" content="bootstrap, bootstrap4" />
 
-		<!-- Bootstrap CSS -->
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-		<link href="css/tiny-slider.css" rel="stylesheet">
-		<link href="css/style.css" rel="stylesheet">
-		<style>
-			.product-item {
-				height: 100%;
-				display: flex;
-				flex-direction: column;
-			}
-			.product-thumbnail {
-				width: 100%;
-				height: 200px;
-				object-fit: cover;
-			}
-			.product-title {
-				font-size: 1.1rem;
-				margin: 10px 0;
-				height: 2.4em;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				display: -webkit-box;
-				-webkit-line-clamp: 2;
-				-webkit-box-orient: vertical;
-			}
-			.product-price {
-				font-size: 1.2rem;
-				color: #198754;
-				margin-bottom: 10px;
-			}
-			.product-item .icon-cross {
-				margin-top: auto;
-			}
-		</style>
-		<title>Shop</title>
-	</head>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="css/tiny-slider.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <style>
+    .product-item {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-thumbnail {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .product-title {
+      font-size: 1.1rem;
+      margin: 10px 0;
+      height: 2.4em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .product-price {
+      font-size: 1.2rem;
+      color: #198754;
+      margin-bottom: 10px;
+    }
+    .product-item .icon-cross {
+      margin-top: auto;
+    }
+	.pagination .page-link {
+  color: #3b5d50;
+  border: 1px solid #3b5d50;
+  background-color: #fff;
+  transition: 0.3s;
+}
+
+/* Hover */
+.pagination .page-link:hover {
+  background-color: #3b5d50;
+  color: #fff;
+}
+
+/* Page active */
+.pagination .active .page-link {
+  background-color: #3b5d50;
+  border-color: #3b5d50;
+  color: #fff;
+}
+  </style>
+
+  <title>Shop</title>
+</head>
+<body>
+
 {% include 'home/navbar.html.twig' %}
-	<body>
-		<!-- Start Hero Section -->
-			<div class="hero">
-				<div class="container">
-					<div class="row justify-content-between">
-						<div class="col-lg-5">
-							<div class="intro-excerpt">
-								<h1>Shop</h1>
-							</div>
-						</div>
-						<div class="col-lg-7">
-							
-						</div>
-					</div>
-				</div>
-			</div>
-		<!-- End Hero Section -->
-		<div class="untree_co-section product-section before-footer-section">
-		    <div class="container">
-		      	<div class="row">
-		      		{% for produit in produits %}
-                   <!-- Start Column 3 -->
-					<div class="col-12 col-md-4 col-lg-3 mb-5">
-						<div class="product-item">
-							{% for image in images %}
-								{% if image.getproduct().id==produit.id %}
-									<img src="{{image.name}}" class="img-fluid product-thumbnail" alt="{{produit.name}}">
-								{% endif %}
-							{% endfor %}
-							<h3 class="product-title">{{produit.name}}</h3>
-							<strong class="product-price">{{produit.prix}}DT</strong>
-							<a href="{{ path('cart_add', {'id': produit.id}) }}" class="d-block text-center">
-								<span class="icon-cross">
-									<img src="images/cross.svg" class="img-fluid">
-								</span>
-							</a>
-						</div>
-					</div>
-					<!-- End Column 3 -->
-                {% else %}
-                    <div class="col-12">
-                        <h5 class="text-center text-muted">No product found.</h5>
-                    </div>
-                {% endfor %}
-				</div>	
-		    </div>
-			  <div class="pagination">
-            <!-- Case à cocher invisible pour chaque page -->
-            <input type="radio" name="pagination" id="page-1" checked>
-            <input type="radio" name="pagination" id="page-2">
-            <!-- Ajoutez plus de inputs pour plus de pages -->
 
-            <!-- Boutons de pagination -->
-            <div class="pagination-controls">
-                <label for="page-1" class="page-btn">1</label>
-                <label for="page-2" class="page-btn">2</label>
-                <!-- Ajoutez plus de labels pour plus de pages -->
-            </div>
+<!-- Start Hero Section -->
+<div class="hero">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-5">
+        <div class="intro-excerpt">
+          <h1>Shop</h1>
         </div>
+      </div>
+      <div class="col-lg-7"></div>
     </div>
-</div
-		</div>
-		{% include 'home/footer.html.twig' %}
+  </div>
+</div>
+<!-- End Hero Section -->
 
-		<script src="js/bootstrap.bundle.min.js"></script>
-		<script src="js/tiny-slider.js"></script>
-		<script src="js/custom.js"></script>
-	</body>
+<div class="untree_co-section product-section before-footer-section">
+  <div class="container">
+    <div class="row">
+      {% if produits|length > 0 %}
+        {% for produit in produits %}
+          <div class="col-12 col-md-4 col-lg-3 mb-5">
+            <div class="product-item">
+              {% set produitImage = null %}
+              {% for image in images %}
+                {% if image.getproduct().id == produit.id and produitImage is null %}
+                  {% set produitImage = image.name %}
+                {% endif %}
+              {% endfor %}
+              {% if produitImage %}
+                <img src="{{ produitImage }}" class="img-fluid product-thumbnail" alt="{{ produit.name }}">
+              {% else %}
+                <img src="images/placeholder.png" class="img-fluid product-thumbnail" alt="No image">
+              {% endif %}
+              <h3 class="product-title">{{ produit.name }}</h3>
+              <strong class="product-price">{{ produit.prix }}DT</strong>
+              <a href="{{ path('cart_add', {'id': produit.id}) }}" class="d-block text-center">
+                <span class="icon-cross">
+                  <img src="images/cross.svg" class="img-fluid">
+                </span>
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12">
+          <h5 class="text-center text-muted">No product found.</h5>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- PAGINATION -->
+    <nav class="mt-4">
+      <ul class="pagination justify-content-center">
+        {% set totalPages = (total / limit)|round(0, 'ceil') %}
+        {% for i in 1..totalPages %}
+          <li class="page-item {% if i == page %}active{% endif %}">
+            <a class="page-link" href="{{ path('produit.index', {'page': i}) }}">{{ i }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+  </div>
+</div>
+
+{% include 'home/footer.html.twig' %}
+
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/tiny-slider.js"></script>
+<script src="js/custom.js"></script>
+</body>
 </html>
