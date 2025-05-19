@@ -139,8 +139,20 @@
 		<div class="mt-5">
 			{% include 'home/footer.html.twig' %}
 		</div>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		{% for message in app.flashes('error') %}
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: '{{ message }}',
+        confirmButtonColor: '#dc3545'
+    });
+</script>
+{% endfor %}
 		<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 		<script src="{{ asset('js/tiny-slider.js') }}"></script>
 		<script src="{{ asset('js/custom.js') }}"></script>
+
 	</body>
 </html>

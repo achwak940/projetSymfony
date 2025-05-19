@@ -28,6 +28,8 @@ final class DaschboardController extends AbstractController
         'user' => $user,  // Passe l'utilisateur à la vue
     ]);
     }
+
+    
     #[Route('/admin', name: 'admin')]
     public function admin(
         Request $request,
@@ -121,7 +123,6 @@ final class DaschboardController extends AbstractController
         $form=$this->createForm(ProductType::class,$product);
         $form->handleRequest($request);
         if($form->isSubmitted()&&$form->isValid()){
-            $en->persist($product);
             $en->flush();
             $this->addFlash('success', 'Le produit a été modifié avec succès');
             return $this->redirectToRoute('admin');

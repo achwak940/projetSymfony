@@ -63,31 +63,50 @@ public function index(
     {
     return $this->render('home/thankyou.html.twig');
     }
+
+
     #[Route('/add/{id}', name: 'cart_add')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function add(Product $product, EntityManagerInterface $em, CartRepository $cartRepo): Response
-    {
-        $user = $this->getUser();
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
+public function add(Product $product, Request $request, EntityManagerInterface $em, CartRepository $cartRepo): Response
+{
+    $user = $this->getUser();
+    $quantity = $request->query->get('quantity', 1); // quantité à ajouter, par défaut 1
 
-        $cartItem = $cartRepo->findOneBy([
-            'user' => $user,
-            'product' => $product
-        ]);
-
-        if ($cartItem) {
-            $cartItem->setQuantity($cartItem->getQuantity() + 1);
-        } else {
-            $cartItem = new Cart();
-            $cartItem->setUser($user);
-            $cartItem->setProduct($product);
-            $cartItem->setQuantity(1);
-            $em->persist($cartItem);
-        }
-
-        $em->flush();
-
-        return $this->redirectToRoute('produit.index');
+    // Vérifier que le stock est suffisant AVANT d'ajouter au panier
+    if ($product->getStock() < $quantity) {
+        $this->addFlash('error', 'Stock insuffisant pour ce produit.');
+        return $this->redirectToRoute('cart_show');
     }
+
+    $cartItem = $cartRepo->findOneBy([
+        'user' => $user,
+        'product' => $product
+    ]);
+
+    if ($cartItem) {
+        // Ici, on pourrait aussi vérifier que la quantité totale dans le panier ne dépasse pas le stock
+        $newQuantity = $cartItem->getQuantity() + $quantity;
+        if ($newQuantity > $product->getStock()) {
+            $this->addFlash('error', 'Stock insuffisant pour ce produit avec la quantité demandée.');
+            return $this->redirectToRoute('cart_show');
+        }
+        $cartItem->setQuantity($newQuantity);
+    } else {
+        $cartItem = new Cart();
+        $cartItem->setUser($user);
+        $cartItem->setProduct($product);
+        $cartItem->setQuantity($quantity);
+        $em->persist($cartItem);
+    }
+
+    // **On ne diminue PAS le stock ici**
+
+    $em->flush();
+
+    return $this->redirectToRoute('cart_show');
+}
+
+
     #[Route('/show', name: 'cart_show')]
 public function show(CartRepository $cartRepo): Response
 {
@@ -117,7 +136,7 @@ public function show(CartRepository $cartRepo): Response
         'total' => $total // Passer le total à la vue
     ]);
 }
-    #[Route('/remove/{id}', name: 'cart_remove')]
+#[Route('/remove/{id}', name: 'cart_remove')]
 public function remove(Product $product, CartRepository $cartRepo, EntityManagerInterface $em): Response
 {
     $user = $this->getUser();
@@ -127,17 +146,22 @@ public function remove(Product $product, CartRepository $cartRepo, EntityManager
     ]);
 
     if ($cartItem) {
+        $quantity = $cartItem->getQuantity();
+
+        // Rendre la quantité au stock
+        $product->setStock($product->getStock() + $quantity);
+
         $em->remove($cartItem);
         $em->flush();
     }
 
     return $this->redirectToRoute('cart_show');
 }
+
 #[Route('/valider-commande', name: 'valider_commande')]
 public function validerCommande(
     EntityManagerInterface $em,
-    CartRepository $cartRepo,
-    ProductRepository $productRepo
+    CartRepository $cartRepo
 ): Response {
     $user = $this->getUser();
     $cartItems = $cartRepo->findBy(['user' => $user]);
@@ -147,17 +171,32 @@ public function validerCommande(
         return $this->redirectToRoute('cart_afficher');
     }
 
-    // 1. Créer la commande
+    // 1. Vérifier le stock pour chaque produit
+    foreach ($cartItems as $item) {
+        $produit = $item->getProduct();
+        $quantite = $item->getQuantity();
+
+        if ($produit->getStock() < $quantite) {
+            $this->addFlash('error', "Stock insuffisant pour le produit : " . $produit->getName());
+            return $this->redirectToRoute('cart_afficher');
+        }
+    }
+
+    // 2. Créer la commande
     $commande = new Commande();
     $commande->setNo($user);
     $commande->setCreatedAt(new \DateTimeImmutable());
     $commande->setStatut('En attente');
     $montantTotal = 0;
-    // 2. Créer les détails de la commande
+
+    // 3. Créer les détails de la commande et diminuer le stock
     foreach ($cartItems as $item) {
         $produit = $item->getProduct();
         $quantite = $item->getQuantity();
         $prix = $produit->getPrix();
+
+        // Diminuer le stock
+        $produit->setStock($produit->getStock() - $quantite);
 
         $detail = new DetailCommande();
         $detail->setProduct($produit);
@@ -173,16 +212,16 @@ public function validerCommande(
     $commande->setMontantTotal($montantTotal);
     $em->persist($commande);
 
-    // 3. Vider le panier
+    // 4. Vider le panier
     foreach ($cartItems as $item) {
         $em->remove($item);
     }
 
     $em->flush();
+
     $this->addFlash('success', 'Commande validée avec succès !');
     return $this->redirectToRoute('confirmation');
 }
-
 
 
 #[Route('/email/{id}', name: 'email')]

@@ -3,19 +3,21 @@
 namespace App\Form;
 use App\Entity\Product;
 use App\Entity\Categorie;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\Url;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ProductType extends AbstractType
 {
@@ -28,7 +30,8 @@ class ProductType extends AbstractType
                 'constraints' => [
                     new NotNull([
                         'message' => 'Le nom du produit ne peut pas être vide.'
-                    ])
+                    ]),
+                    new NotBlank(['message' => 'Le nom est requis.']),
                 ]
             ])
             ->add('prix', NumberType::class, [
@@ -39,8 +42,13 @@ class ProductType extends AbstractType
                 'constraints' => [
                     new NotNull([
                         'message' => 'Le prix du produit ne peut pas être vide.'
-                    ])
+                    ]),
+                    new Positive([
+                        'message' => 'Le prix doit être strictement supérieur à 0.'
+                    ]),
                 ]
+                
+                
             ])
             ->add('stock', NumberType::class, [
                 'label' => 'Stock',
